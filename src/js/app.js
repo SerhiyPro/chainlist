@@ -10,18 +10,11 @@ App = {
 
       initWeb3: function () {
             //initialize web3 object by MetaMask
-
-            if (typeof web3 !== 'undefined') {
-                  //reuse the provider of the Web3 object injected by MetaMask 
-                  App.web3Provider = web3.currentProvider;
-            } else {
-                  // create a new provider and plug it directly intoour local node 
-                  App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-            }
+            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
             web3 = new Web3(App.web3Provider);
-
+        
             App.displayAccountInfo();
-
+        
             return App.initContract();
       },
 
