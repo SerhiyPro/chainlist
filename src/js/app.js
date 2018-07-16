@@ -12,9 +12,9 @@ App = {
             //initialize web3 object by MetaMask
             App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
             web3 = new Web3(App.web3Provider);
-        
+
             App.displayAccountInfo();
-        
+
             return App.initContract();
       },
 
@@ -40,6 +40,9 @@ App = {
 
                   //set the provider for our contracts
                   App.contracts.ChainList.setProvider(App.web3Provider);
+
+                  //listen to events
+                  App.listenToEvents();
 
                   //retrive the article from the contract
                   return App.reloadArticles();
@@ -98,11 +101,24 @@ App = {
                         gas: 500000
                   });
             }).then(function (result) {
-                  App.reloadArticles();
             }).catch(function (err) {
                   console.error(err);
             });
 
+      },
+
+      //Listen to events triggered by the contract
+      listenToEvents: function () {
+            App.contracts.ChainList.deployed().then(function (instance) {
+                  instance.LogSellArticle({}, {}).watch(function (error, event) {
+                        if (!error) {
+                              $('#events').append('<li class="list-group-item">' + event.args._name + ' is now for sale</li>');
+                        } else {
+                              console.log(error);
+                        }
+                        App.reloadArticles();
+                  })
+            })
       },
 };
 
